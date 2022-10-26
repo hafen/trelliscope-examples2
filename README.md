@@ -197,4 +197,4 @@ yarn build
 cp -r build/static/ __path__/trelliscope-examples2/with_built_library/lib
 ```
 
-Then make sure the references in the `<link/>` and `<script/>` tags in index.html are pointing to the correct files in `with_built_library/lib`.
+Then make sure the references in the `<link/>` and `<script/>` tags in `with_build_library/index.html` are pointing to the correct files in `with_built_library/lib`.
