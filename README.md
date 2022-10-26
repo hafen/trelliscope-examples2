@@ -19,6 +19,7 @@ library(trelliscopejs)
 library(tidyverse)
 library(gapminder)
 
+
 # we'll place all displays in a temporary directory:
 path <- tempfile()
 dir.create(path)
@@ -166,3 +167,34 @@ pokemon %>%
   trelliscope(name = "pokemon", nrow = 3, ncol = 6,
     path = file.path(path, "pokemon"))
 ```
+
+## Self-contained
+
+```r
+d <- ggplot2::mpg |>
+  tidyr::nest(data = !dplyr::one_of(c("manufacturer", "class"))) |>
+  dplyr::mutate(
+    mean_cty = purrr::map_dbl(data, function(x) mean(x$cty)),
+    panel = map_plot(data, function(x) ggplot2::qplot(hwy, cty, data = x)),
+    class2 = factor(class)
+  )
+
+d %>% trelliscope(name = "city_vs_highway_mpg",
+  self_contained = TRUE, path = file.path(path, "self_contained"))
+
+list.files(path)
+```
+
+## With built JS library
+
+When trelliscope is used outside of the `yarn start` environment, an html page is built that loads the js and css and instantiates a trelliscope app. An example of this is in the `with_build_library` folder of this repo.
+
+The contents of `with_build_library/lib` is empty but you can populate it by issuing the following commands while in the trelliscopejs-lib diretory:
+
+```
+yarn build
+
+cp -r build/static/ __path__/trelliscope-examples2/with_built_library/lib
+```
+
+Then make sure the references in the `<link/>` and `<script/>` tags in index.html are pointing to the correct files in `with_built_library/lib`.
